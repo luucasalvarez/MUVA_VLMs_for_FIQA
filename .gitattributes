@@ -1,0 +1,11 @@
+# Normalizar los archivos de texto a LF en todos los sistemas.
+* text=auto eol=lf
+
+# Conservar los archivos binarios sin conversiones.
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.zip binary

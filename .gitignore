@@ -218,3 +218,16 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Plantilla original y archivos auxiliares de LaTeX
+/Plantilla_Latex/
+/Memoria/*.aux
+/Memoria/*.bbl
+/Memoria/*.blg
+/Memoria/*.out
+/Memoria/*.toc
+/Memoria/*.lof
+/Memoria/*.lot
+/Memoria/*.fls
+/Memoria/*.fdb_latexmk
+/Memoria/*.synctex.gz
