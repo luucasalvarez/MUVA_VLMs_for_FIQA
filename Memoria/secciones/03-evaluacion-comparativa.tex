@@ -1,0 +1,58 @@
+\section{Experimentación y evaluación comparativa}
+\label{sec:evaluacion}
+Esta sección analizará experimentos publicados. No contiene todavía mediciones propias ni resultados extraídos de la literatura.
+
+\subsection{Datasets y protocolos}
+La tabla~\ref{tab:datasets} recoge los conjuntos candidatos del planteamiento. Su selección definitiva requerirá verificar las fuentes originales y los protocolos utilizados en los trabajos revisados.
+\begin{table}[htbp]
+\centering\small
+\caption{Datasets candidatos y aspectos previstos para la revisión.}
+\label{tab:datasets}
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+\toprule
+Dataset & Aspecto que se propone estudiar \\
+\midrule
+LFW & Verificación facial en condiciones no controladas. \\
+IJB-B & Variación de captura, pose y oclusión; protocolos y agregación de imágenes. \\
+SCFace & Vigilancia y variación de distancia de captura. \\
+CelebA-HQ & Calidad visual y uso de degradaciones sintéticas; comprobar su idoneidad para evaluar utilidad biométrica. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+\pendiente{Añadir referencias, tamaño, particiones, condiciones de acceso, reconocedores y preprocesamiento de cada protocolo.}
+
+\subsection{Comparación de métodos y resultados}
+\subsubsection{Criterios de selección y extracción de evidencia}
+Se priorizarán artículos originales y documentación oficial. Para cada estudio se registrarán autores, año, publicación, DOI o enlace, versión del modelo, datos de entrenamiento, conjunto de evaluación, preprocesamiento, reconocedor, instrucciones textuales y métricas. Se indicará si los datos proceden de una publicación o de una eventual reproducción propia.
+\pendiente{Documentar fuentes de búsqueda, fecha de consulta, términos empleados y criterios de inclusión y exclusión.}
+
+\subsubsection{Utilidad biométrica}
+El análisis previsto incluirá curvas de error frente a rechazo (\textit{Error-versus-Reject}, EvR), tasa de falsos no emparejamientos (FNMR) a una tasa de falsos emparejamientos (FMR) fijada y área parcial bajo la curva (pAUC). Se registrarán la regla de rechazo, el rango de integración y la normalización de cada estudio antes de comparar cifras.
+\pendiente{Definir formalmente las métricas con fuentes y especificar qué protocolos admiten comparación directa.}
+
+\subsubsection{Explicabilidad, robustez y coste}
+Se examinarán por separado la detección de degradaciones, la exactitud de las explicaciones respecto de evidencia verificable, la consistencia entre respuestas y la sensibilidad a las instrucciones textuales (\textit{prompts}). El coste y la latencia se compararán únicamente si se conocen las condiciones de medición.
+\pendiente{Definir cómo evalúa cada publicación las alucinaciones y las explicaciones, e identificar si utiliza anotaciones, degradaciones controladas o evaluación humana.}
+
+\subsubsection{Síntesis y discusión de resultados publicados}
+\begin{table}[htbp]
+\centering\small
+\caption{Ficha de extracción prevista para cada método. No contiene resultados.}
+\label{tab:ficha}
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+\toprule
+Campo & Información que se debe registrar \\
+\midrule
+Método y fuente & Nombre, versión, año y referencia verificada. \\
+Familia y adaptación & FIQA especializado o VLM; entrenamiento y ejemplos disponibles. \\
+Protocolo & Dataset, partición, preprocesamiento y reconocedor facial. \\
+Utilidad biométrica & EvR, FNMR/FMR y pAUC con condiciones completas. \\
+Explicaciones & Evidencia de exactitud, consistencia y sensibilidad al prompt. \\
+Coste y límites & Hardware, latencia, recursos y restricciones declaradas. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+\pendiente{Construir las tablas de resultados y figuras desde fuentes verificadas, con citas junto a cada dato. No ordenar globalmente métodos evaluados en protocolos incompatibles.}
+
+\subsubsection{Posible experimentación propia}
+Su inclusión se decidirá con el profesor. Si se incorpora, se especificarán por separado la hipótesis, los modelos, los datos autorizados, los prompts, el protocolo, los recursos y los resultados reproducibles. Por ahora no forma parte del trabajo ejecutado.

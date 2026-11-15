@@ -1,0 +1,40 @@
+\section{Estado del arte}
+\label{sec:arte}
+Los apartados siguientes establecen el recorrido de la revisión. Los métodos enumerados son candidatos indicados en el planteamiento; su descripción y sus resultados se incorporarán tras consultar las publicaciones originales.
+
+\subsection{Evaluación de calidad de imagen (IQA)}
+\label{sec:iqa}
+\subsubsection{Conceptos y factores de degradación}
+\pendiente{Definir Image Quality Assessment (IQA) y describir iluminación, desenfoque, ruido, resolución y compresión, con referencias.}
+\subsubsection{Métodos con y sin referencia}
+\pendiente{Distinguir referencia completa (FR-IQA), referencia reducida (RR-IQA) y ausencia de referencia (NR-IQA); aclarar qué información necesita cada familia.}
+\subsubsection{De la calidad perceptual a la calidad biométrica facial}
+\pendiente{Introducir pose, expresión, oclusiones y condiciones de captura. Explicar cómo se verifica la relación entre calidad estimada y rendimiento biométrico.}
+
+\subsection{Modelos de visión-lenguaje (VLMs)}
+\subsubsection{Representaciones visuales y textuales}
+\pendiente{Presentar el aprendizaje multimodal y la alineación entre imagen y texto.}
+\subsubsection{Arquitecturas contrastivas y generativas}
+\pendiente{Revisar CLIP, Qwen-VL y LLaVA a partir de sus artículos originales, indicando versión y diferencias relevantes para FIQA.}
+\subsubsection{Estrategias de adaptación}
+\pendiente{Definir zero-shot, few-shot y fine-tuning. Registrar ejemplos, entrenamiento y datos utilizados en cada trabajo.}
+
+\subsection{Aprendizaje profundo aplicado a IQA y FIQA}
+\subsubsection{De métricas tradicionales a redes profundas}
+\pendiente{Resumir la evolución hacia redes convolucionales (CNN) y transformers sin desviar el foco de la utilidad biométrica.}
+\subsubsection{Métodos especializados de FIQA}
+\pendiente{Revisar SER-FIQ, SDD-FIQA, FaceQAN, ViT-FIQA y eDifFIQA. Para cada método, documentar señal de calidad, entrenamiento y dependencia del reconocedor facial.}
+\subsubsection{Alcance de las puntuaciones escalares}
+\pendiente{Analizar qué permite evaluar una puntuación y qué información adicional se necesita para explicar una degradación.}
+
+\subsection{VLMs aplicados a IQA y FIQA}
+\subsubsection{Estimación de calidad y descripción de degradaciones}
+\pendiente{Revisar Q-Align y CLIB-FIQA, verificando sus objetivos, arquitecturas y protocolos. Separar evidencia de IQA general y de FIQA.}
+\subsubsection{VLMs generalistas en escenarios zero-shot}
+El contexto propone como punto de partida el artículo \textit{Employing Vision-Language Models for Face Image Quality Assessment}, atribuido a Sarıtaş, Onaran, Štruc y Ekenel (2026). Sus metadatos y su contenido quedan pendientes de verificación antes de incorporarlo como referencia científica o describir sus resultados.
+\pendiente{Localizar y leer el artículo indicado en el contexto:\newline
+\url{https://arxiv.org/abs/2605.17489}.\newline
+Contrastar el código asociado:\newline
+\url{https://github.com/ThEnded32/VLM4FIQA}.}
+\subsubsection{Tipos de salida y sistemas híbridos}
+\pendiente{Comparar puntuaciones, atributos, explicaciones y combinaciones de FIQA especializado con VLMs. Distinguir consistencia textual y exactitud de las explicaciones.}

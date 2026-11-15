@@ -1,0 +1,19 @@
+% !TeX program = pdflatex
+% !TeX encoding = UTF-8
+% Adaptación de Plantilla_Latex/tfg.tex. Véase LICENSE-plantilla.txt.
+\documentclass[11pt,a4paper]{article}
+\input{configuracion}
+\begin{document}
+\hypersetup{pageanchor=false}
+\input{portada}
+\hypersetup{pageanchor=true}
+\input{secciones/00-resumen}
+\tableofcontents
+\newpage
+\input{secciones/01-introduccion}
+\input{secciones/02-estado-del-arte}
+\input{secciones/03-evaluacion-comparativa}
+\input{secciones/04-conclusiones}
+\bibliographystyle{IEEEtran}
+\bibliography{bibliografia}
+\end{document}
