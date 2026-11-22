@@ -1,58 +1,75 @@
 \section{Experimentación y evaluación comparativa}
 \label{sec:evaluacion}
-Esta sección analizará experimentos publicados. No contiene todavía mediciones propias ni resultados extraídos de la literatura.
+Esta sección analiza experimentos publicados. Todas las cifras proceden de los artículos citados y no de mediciones propias.
 
 \subsection{Datasets y protocolos}
-La tabla~\ref{tab:datasets} recoge los conjuntos candidatos del planteamiento. Su selección definitiva requerirá verificar las fuentes originales y los protocolos utilizados en los trabajos revisados.
+La tabla~\ref{tab:datasets} recoge los conjuntos que usa el trabajo de Sarıtaş et al.~\cite{saritas2026vlmfiqa}, que es la principal referencia experimental de esta revisión. En todos ellos las caras se alinean con MTCNN y se redimensionan a $224\times224$ píxeles antes de pasarlas al VLM o al método FIQA.
 \begin{table}[htbp]
 \centering\small
-\caption{Datasets candidatos y aspectos previstos para la revisión.}
+\caption{Datasets empleados por Sarıtaş et al.~\cite{saritas2026vlmfiqa} y papel de cada uno.}
 \label{tab:datasets}
 \begin{tabularx}{\linewidth}{@{}lX@{}}
 \toprule
-Dataset & Aspecto que se propone estudiar \\
+Dataset & Papel en la evaluación \\
 \midrule
-LFW & Verificación facial en condiciones no controladas. \\
-IJB-B & Variación de captura, pose y oclusión; protocolos y agregación de imágenes. \\
-SCFace & Vigilancia y variación de distancia de captura. \\
-CelebA-HQ & Calidad visual y uso de degradaciones sintéticas; comprobar su idoneidad para evaluar utilidad biométrica. \\
+LFW~\cite{huang2008lfw} & Verificación facial con imágenes reales no controladas. \\
+IJB-B~\cite{whitelam2017ijbb} & Imágenes reales con variación de captura, pose y oclusión. \\
+SCFace~\cite{grgic2011scface} & Cámaras de vigilancia a tres distancias: 4,2~m, 2,6~m y 1,0~m. \\
+CelebA-HQ~\cite{karras2018celebahq} & Referencia de alta calidad y base del banco de degradaciones sintéticas. \\
 \bottomrule
 \end{tabularx}
 \end{table}
-\pendiente{Añadir referencias, tamaño, particiones, condiciones de acceso, reconocedores y preprocesamiento de cada protocolo.}
+FaceOracle~\cite{kabbani2024faceoracle} se evalúa con un protocolo distinto. Los autores construyen un conjunto propio con 1.000 muestras de tipo~1, imágenes de FRLL cuyos valores de referencia calcula OFIQ, y 100 muestras de tipo~2, que son preguntas conceptuales sobre calidad y estándares.
+\pendiente{Añadir tamaño, particiones y condiciones de acceso de cada dataset, y los protocolos de los trabajos de Lucas.}
 
 \subsection{Comparación de métodos y resultados}
 \subsubsection{Criterios de selección y extracción de evidencia}
-Se priorizarán artículos originales y documentación oficial. Para cada estudio se registrarán autores, año, publicación, DOI o enlace, versión del modelo, datos de entrenamiento, conjunto de evaluación, preprocesamiento, reconocedor, instrucciones textuales y métricas. Se indicará si los datos proceden de una publicación o de una eventual reproducción propia.
+Se priorizan artículos originales y documentación oficial. Para cada estudio se registran autores, año, publicación, DOI o enlace, versión del modelo, datos de entrenamiento, conjunto de evaluación, preprocesamiento, reconocedor, instrucciones textuales y métricas.
 \pendiente{Documentar fuentes de búsqueda, fecha de consulta, términos empleados y criterios de inclusión y exclusión.}
 
 \subsubsection{Utilidad biométrica}
-El análisis previsto incluirá curvas de error frente a rechazo (\textit{Error-versus-Reject}, EvR), tasa de falsos no emparejamientos (FNMR) a una tasa de falsos emparejamientos (FMR) fijada y área parcial bajo la curva (pAUC). Se registrarán la regla de rechazo, el rango de integración y la normalización de cada estudio antes de comparar cifras.
+\label{sec:utilidad}
+Una curva EvR muestra cómo evoluciona el error de reconocimiento cuando se descartan progresivamente las imágenes con peor calidad estimada. Si el método de calidad es bueno, el error baja deprisa al descartar pocas imágenes. Sarıtaş et al. miden la tasa de falsos no emparejamientos (FNMR) con una tasa de falsos emparejamientos (FMR) fijada en $10^{-3}$ y calculan el área parcial bajo la curva (pAUC) hasta el 1\,\%, 5\,\%, 10\,\% y 20\,\% de rechazo. Para no depender de un único reconocedor, promedian los resultados de ArcFace, TransFace y LVFace. En esta métrica, un valor menor es mejor.
+
+El resultado más llamativo es que QWEN2.5-72B, usado en zero-shot, obtiene un AUC de 0,00624 al 10\,\% y de 0,00850 al 20\,\%. Con ello supera a todos los métodos especializados salvo a SDD-FIQA, que logra 0,00622 y 0,00833. QWEN2.5-7B es el mejor VLM al 5\,\% (0,00378) y supera al modelo de 32B en la mayoría de métricas. Gemma-3 e Idefics quedan claramente por detrás. Los autores concluyen que la arquitectura del modelo influye más que su número de parámetros.
 \pendiente{Definir formalmente las métricas con fuentes y especificar qué protocolos admiten comparación directa.}
 
-\subsubsection{Explicabilidad, robustez y coste}
-Se examinarán por separado la detección de degradaciones, la exactitud de las explicaciones respecto de evidencia verificable, la consistencia entre respuestas y la sensibilidad a las instrucciones textuales (\textit{prompts}). El coste y la latencia se compararán únicamente si se conocen las condiciones de medición.
-\pendiente{Definir cómo evalúa cada publicación las alucinaciones y las explicaciones, e identificar si utiliza anotaciones, degradaciones controladas o evaluación humana.}
+\subsubsection{Sensibilidad a las condiciones de vigilancia}
+En SCFace, la familia QWEN asigna más calidad a medida que el sujeto se acerca a la cámara, que es el comportamiento esperado. QWEN2.5-32B pasa de una puntuación media de unos 16,5 en la distancia lejana a 27,0 en la media y 36,5 en la cercana. Gemma-3, en cambio, da valores casi constantes (alrededor de 20) y Idefics puntúa con 0 casi todas las imágenes lejanas y de distancia media. En las imágenes lejanas, las etiquetas que más asignan los modelos son ``Low Resolution'' y ``Blurry''.
 
-\subsubsection{Síntesis y discusión de resultados publicados}
+\subsubsection{Explicabilidad, robustez y coste}
+\label{sec:explicabilidad}
+\paragraph{Robustez al prompt.} Con el prompt de clasificación de atributos, los modelos puntúan de forma algo más estricta que con el simple. QWEN2.5-32B apenas cambia con la formulación. QWEN2.5-7B, en cambio, mejora con las variantes \textit{Utility} y \textit{Reliability}, lo que según los autores indica que los modelos pequeños necesitan pistas semánticas sobre la tarea~\cite{saritas2026vlmfiqa}.
+
+\paragraph{Consistencia interna.} En QWEN2.5-32B la relación entre puntuación y etiquetas es monótona: las imágenes que el modelo etiqueta como ``Clear'' reciben entre 80 y 95 puntos, y las que etiqueta como ``Severe'', entre 5 y 25. Que la puntuación y la etiqueta concuerden no garantiza que la etiqueta sea correcta. La consistencia y la exactitud de la explicación son propiedades distintas, y la siguiente prueba mide la segunda.
+
+\paragraph{Alucinaciones y detección de degradaciones.} El banco sintético parte de imágenes de CelebA-HQ y aplica cinco tipos de degradación: desenfoque, ruido, baja resolución, compresión JPEG y exposición. Cada imagen recibe un artefacto fuerte y dos leves. Se mide la tasa de alucinación sobre imágenes limpias, el \textit{recall} del artefacto fuerte y la distancia de Hamming entre las degradaciones detectadas y las reales. La tabla~\ref{tab:alucinaciones} resume los resultados.
+
 \begin{table}[htbp]
 \centering\small
-\caption{Ficha de extracción prevista para cada método. No contiene resultados.}
-\label{tab:ficha}
+\caption{Comportamiento de los VLMs en el banco de degradaciones sintéticas de Sarıtaş et al.~\cite{saritas2026vlmfiqa}.}
+\label{tab:alucinaciones}
 \begin{tabularx}{\linewidth}{@{}lX@{}}
 \toprule
-Campo & Información que se debe registrar \\
+Modelo & Resultado \\
 \midrule
-Método y fuente & Nombre, versión, año y referencia verificada. \\
-Familia y adaptación & FIQA especializado o VLM; entrenamiento y ejemplos disponibles. \\
-Protocolo & Dataset, partición, preprocesamiento y reconocedor facial. \\
-Utilidad biométrica & EvR, FNMR/FMR y pAUC con condiciones completas. \\
-Explicaciones & Evidencia de exactitud, consistencia y sensibilidad al prompt. \\
-Coste y límites & Hardware, latencia, recursos y restricciones declaradas. \\
+QWEN2.5-7B & Marca como limpias el 87,9\,\% de las imágenes limpias, pero cuando alucina un defecto su puntuación cae de forma errática. Como los demás modelos de 7B, sus errores de Hamming se concentran en distancia 2 (alrededor del 55\,\%). \\
+QWEN2.5-32B & Alucina algún defecto en cerca del 50\,\% de las imágenes limpias, aunque su puntuación baja de forma coherente con lo que detecta. Solo identifica las tres degradaciones de una imagen en el 8,7\,\% de los casos. Tiene más aciertos exactos (7,8\,\% con distancia 0), pero sus errores están muy dispersos. \\
+QWEN2-7B & Es el mejor detector: recupera el artefacto fuerte en el 79,8\,\% de los casos y detecta las tres degradaciones en el 39,7\,\%. \\
 \bottomrule
 \end{tabularx}
 \end{table}
-\pendiente{Construir las tablas de resultados y figuras desde fuentes verificadas, con citas junto a cada dato. No ordenar globalmente métodos evaluados en protocolos incompatibles.}
+
+Los autores resumen este resultado como un compromiso entre precisión descriptiva y consistencia: los modelos grandes son hipercríticos, pero su razonamiento es más coherente con sus propias puntuaciones.
+
+\paragraph{Coste.} En una RTX~4090 con lotes de 16 imágenes, QWEN2.5-7B tarda 33,3~ms por imagen, frente a 0,7~ms de eDifFIQA, unas 50 veces más. Gemma-3 tarda 104,9~ms, Phi-4 111,4~ms y QWEN2.5-7B con el prompt de clasificación 102,7~ms. Por este motivo, los autores proponen usar los VLMs como módulo complementario y no como sustituto de la FIQA especializada.
+
+\paragraph{FaceOracle.} La evaluación de FaceOracle~\cite{kabbani2024faceoracle} mide si el agente elige la herramienta adecuada (\textit{Tool Selection Accuracy}, TSA) y la distancia coseno entre sus respuestas y las de referencia en tres variantes (ARD, ACD y QCD). Obtiene una TSA de 0,97, una ACD de 0,12 y una QCD de 0,17. Su ARD es de 0,081, frente a 0,23 de ChatGPT. Conviene leer estas cifras con cautela, y esta lectura es nuestra y no de los autores: los valores de referencia del conjunto los calcula el mismo OFIQ que usa el agente, así que la TSA indica si el agente llama a la herramienta correcta, no si la calidad que comunica es correcta. Además, se usa un único conjunto de datos, no hay estudio con usuarios y la comparación se limita a ChatGPT.
+\pendiente{Completar con la evaluación de explicaciones de los trabajos de Lucas (Q-Align, DepictQA, Sony et al.).}
+
+\subsubsection{Síntesis y discusión de resultados publicados}
+De los trabajos revisados hasta ahora se desprenden varias observaciones. Un VLM generalista sin entrenamiento puede ordenar imágenes faciales por utilidad biométrica casi tan bien como los mejores métodos especializados, al menos con QWEN2.5-72B y en el protocolo de Sarıtaş et al. A cambio, es unas 50 veces más lento y sus explicaciones no son fiables en imágenes limpias. FaceOracle muestra otra vía, en la que la estimación la hace un algoritmo normalizado y el modelo de lenguaje se limita a explicarla y a citar el estándar. DSL-FIQA recuerda que una buena correlación con el MOS no dice nada sobre la utilidad para el reconocimiento. Las cifras de estos tres trabajos no son comparables entre sí, porque miden cosas distintas con protocolos distintos.
+\pendiente{Construir las tablas de resultados con el resto de métodos, con citas junto a cada dato. No ordenar globalmente métodos evaluados en protocolos incompatibles.}
 
 \subsubsection{Posible experimentación propia}
 Su inclusión se decidirá con el profesor. Si se incorpora, se especificarán por separado la hipótesis, los modelos, los datos autorizados, los prompts, el protocolo, los recursos y los resultados reproducibles. Por ahora no forma parte del trabajo ejecutado.
