@@ -3,23 +3,23 @@
 Esta sección analiza experimentos publicados. Todas las cifras proceden de los artículos citados y no de mediciones propias.
 
 \subsection{Datasets y protocolos}
-La tabla~\ref{tab:datasets} recoge los conjuntos que usa el trabajo de Sarıtaş et al.~\cite{saritas2026vlmfiqa}, que es la principal referencia experimental de esta revisión. En todos ellos las caras se alinean con MTCNN y se redimensionan a $224\times224$ píxeles antes de pasarlas al VLM o al método FIQA.
+La tabla~\ref{tab:datasets} recoge los conjuntos que usa el trabajo de Sarıtaş et al.~\cite{Saritas_2026_FG}, que es la principal referencia experimental de esta revisión. En todos ellos las caras se alinean con MTCNN y se redimensionan a $224\times224$ píxeles antes de pasarlas al VLM o al método FIQA.
 \begin{table}[htbp]
 \centering\small
-\caption{Datasets empleados por Sarıtaş et al.~\cite{saritas2026vlmfiqa} y papel de cada uno.}
+\caption{Datasets empleados por Sarıtaş et al.~\cite{Saritas_2026_FG} y papel de cada uno.}
 \label{tab:datasets}
 \begin{tabularx}{\linewidth}{@{}lX@{}}
 \toprule
 Dataset & Papel en la evaluación \\
 \midrule
-LFW~\cite{huang2008lfw} & Verificación facial con imágenes reales no controladas. \\
-IJB-B~\cite{whitelam2017ijbb} & Imágenes reales con variación de captura, pose y oclusión. \\
-SCFace~\cite{grgic2011scface} & Cámaras de vigilancia a tres distancias: 4,2~m, 2,6~m y 1,0~m. \\
-CelebA-HQ~\cite{karras2018celebahq} & Referencia de alta calidad y base del banco de degradaciones sintéticas. \\
+LFW~\cite{Huang_2008_ECCVW} & Verificación facial con imágenes reales no controladas. \\
+IJB-B~\cite{Whitelam_2017_CVPRW} & Imágenes reales con variación de captura, pose y oclusión. \\
+SCFace~\cite{Grgic_2011_MTAP} & Cámaras de vigilancia a tres distancias: 4,2~m, 2,6~m y 1,0~m. \\
+CelebA-HQ~\cite{Karras_2018_ICLR} & Referencia de alta calidad y base del banco de degradaciones sintéticas. \\
 \bottomrule
 \end{tabularx}
 \end{table}
-FaceOracle~\cite{kabbani2024faceoracle} se evalúa con un protocolo distinto. Los autores construyen un conjunto propio con 1.000 muestras de tipo~1, imágenes de FRLL cuyos valores de referencia calcula OFIQ, y 100 muestras de tipo~2, que son preguntas conceptuales sobre calidad y estándares.
+FaceOracle~\cite{Kabbani_2024_ECCVW} se evalúa con un protocolo distinto. Los autores construyen un conjunto propio con 1.000 muestras de tipo~1, imágenes de FRLL cuyos valores de referencia calcula OFIQ, y 100 muestras de tipo~2, que son preguntas conceptuales sobre calidad y estándares.
 \pendiente{Añadir tamaño, particiones y condiciones de acceso de cada dataset, y los protocolos de los trabajos de Lucas.}
 
 \subsection{Comparación de métodos y resultados}
@@ -39,7 +39,7 @@ En SCFace, la familia QWEN asigna más calidad a medida que el sujeto se acerca 
 
 \subsubsection{Explicabilidad, robustez y coste}
 \label{sec:explicabilidad}
-\paragraph{Robustez al prompt.} Con el prompt de clasificación de atributos, los modelos puntúan de forma algo más estricta que con el simple. QWEN2.5-32B apenas cambia con la formulación. QWEN2.5-7B, en cambio, mejora con las variantes \textit{Utility} y \textit{Reliability}, lo que según los autores indica que los modelos pequeños necesitan pistas semánticas sobre la tarea~\cite{saritas2026vlmfiqa}.
+\paragraph{Robustez al prompt.} Con el prompt de clasificación de atributos, los modelos puntúan de forma algo más estricta que con el simple. QWEN2.5-32B apenas cambia con la formulación. QWEN2.5-7B, en cambio, mejora con las variantes \textit{Utility} y \textit{Reliability}, lo que según los autores indica que los modelos pequeños necesitan pistas semánticas sobre la tarea~\cite{Saritas_2026_FG}.
 
 \paragraph{Consistencia interna.} En QWEN2.5-32B la relación entre puntuación y etiquetas es monótona: las imágenes que el modelo etiqueta como ``Clear'' reciben entre 80 y 95 puntos, y las que etiqueta como ``Severe'', entre 5 y 25. Que la puntuación y la etiqueta concuerden no garantiza que la etiqueta sea correcta. La consistencia y la exactitud de la explicación son propiedades distintas, y la siguiente prueba mide la segunda.
 
@@ -47,7 +47,7 @@ En SCFace, la familia QWEN asigna más calidad a medida que el sujeto se acerca 
 
 \begin{table}[htbp]
 \centering\small
-\caption{Comportamiento de los VLMs en el banco de degradaciones sintéticas de Sarıtaş et al.~\cite{saritas2026vlmfiqa}.}
+\caption{Comportamiento de los VLMs en el banco de degradaciones sintéticas de Sarıtaş et al.~\cite{Saritas_2026_FG}.}
 \label{tab:alucinaciones}
 \begin{tabularx}{\linewidth}{@{}lX@{}}
 \toprule
@@ -64,7 +64,7 @@ Los autores resumen este resultado como un compromiso entre precisión descripti
 
 \paragraph{Coste.} En una RTX~4090 con lotes de 16 imágenes, QWEN2.5-7B tarda 33,3~ms por imagen, frente a 0,7~ms de eDifFIQA, unas 50 veces más. Gemma-3 tarda 104,9~ms, Phi-4 111,4~ms y QWEN2.5-7B con el prompt de clasificación 102,7~ms. Por este motivo, los autores proponen usar los VLMs como módulo complementario y no como sustituto de la FIQA especializada.
 
-\paragraph{FaceOracle.} La evaluación de FaceOracle~\cite{kabbani2024faceoracle} mide si el agente elige la herramienta adecuada (\textit{Tool Selection Accuracy}, TSA) y la distancia coseno entre sus respuestas y las de referencia en tres variantes (ARD, ACD y QCD). Obtiene una TSA de 0,97, una ACD de 0,12 y una QCD de 0,17. Su ARD es de 0,081, frente a 0,23 de ChatGPT. Conviene leer estas cifras con cautela, y esta lectura es nuestra y no de los autores: los valores de referencia del conjunto los calcula el mismo OFIQ que usa el agente, así que la TSA indica si el agente llama a la herramienta correcta, no si la calidad que comunica es correcta. Además, se usa un único conjunto de datos, no hay estudio con usuarios y la comparación se limita a ChatGPT.
+\paragraph{FaceOracle.} La evaluación de FaceOracle~\cite{Kabbani_2024_ECCVW} mide si el agente elige la herramienta adecuada (\textit{Tool Selection Accuracy}, TSA) y la distancia coseno entre sus respuestas y las de referencia en tres variantes (ARD, ACD y QCD). Obtiene una TSA de 0,97, una ACD de 0,12 y una QCD de 0,17. Su ARD es de 0,081, frente a 0,23 de ChatGPT. Conviene leer estas cifras con cautela, y esta lectura es nuestra y no de los autores: los valores de referencia del conjunto los calcula el mismo OFIQ que usa el agente, así que la TSA indica si el agente llama a la herramienta correcta, no si la calidad que comunica es correcta. Además, se usa un único conjunto de datos, no hay estudio con usuarios y la comparación se limita a ChatGPT.
 \pendiente{Completar con la evaluación de explicaciones de los trabajos de Lucas (Q-Align, DepictQA, Sony et al.).}
 
 \subsubsection{Síntesis y discusión de resultados publicados}
