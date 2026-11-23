@@ -26,6 +26,6 @@ pdflatex -interaction=nonstopmode -halt-on-error memoria.tex
 pdflatex -interaction=nonstopmode -halt-on-error memoria.tex
 ```
 
-Las referencias de `bibliografia.bib` están verificadas; los campos marcados con `% COMPROBAR` deben revisarse antes de la entrega.
+Las referencias de `bibliografia.bib` están verificadas en sus fuentes.
 
 Los recursos necesarios están copiados en esta carpeta: la memoria no depende de la carpeta ignorada `Plantilla_Latex`. La licencia de la plantilla se conserva en `LICENSE-plantilla.txt`.
