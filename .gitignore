@@ -232,3 +232,6 @@ __marimo__/
 /Memoria/*.fdb_latexmk
 /Memoria/*.synctex.gz
 /Memoria/memoria.pdf
+
+# PDFs de los papers (uso local, no se versionan)
+/Contexto/papers/
