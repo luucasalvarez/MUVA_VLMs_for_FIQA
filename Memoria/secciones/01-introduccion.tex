@@ -1,24 +1,18 @@
 \section{Introducción}
 \label{sec:introduccion}
 \subsection{Contexto y motivación}
-El proyecto se enmarca en la asignatura Biometría Informática del Máster Universitario en Visión Artificial de la Universidad Rey Juan Carlos. Su objeto de estudio es la evaluación de calidad de imágenes faciales y el papel de los modelos de visión-lenguaje en esta tarea.
+El proyecto se enmarca en la asignatura Biometría Informática del Máster Universitario en Visión Artificial de la Universidad Rey Juan Carlos. Su objeto de estudio es la evaluación de calidad de imágenes faciales (\textit{Face Image Quality Assessment}, FIQA) y el papel que pueden tener en ella los modelos de visión-lenguaje (\textit{Vision-Language Models}, VLMs).
 
-El análisis distinguirá la calidad perceptual de la utilidad biométrica. La primera se refiere a la apariencia visual de la imagen; la segunda se estudiará en relación con su contribución al rendimiento de un sistema de reconocimiento facial. Se investigará si una explicación en lenguaje natural permite identificar factores de captura relevantes y ofrecer recomendaciones útiles.
+En un sistema de reconocimiento facial, no todas las imágenes son igual de útiles. Una foto desenfocada, a contraluz o tomada desde lejos aumenta la probabilidad de que el sistema se equivoque. Por eso conviene distinguir dos ideas de calidad. La calidad perceptual se refiere a cómo ve la imagen una persona; la utilidad biométrica, a cuánto ayuda esa imagen a que el sistema reconozca correctamente a quien aparece en ella. Las dos suelen ir de la mano, pero no siempre coinciden.
+
+Los métodos FIQA actuales estiman bien la utilidad, pero devuelven solo un número. Los VLMs, en cambio, pueden describir una imagen en lenguaje natural, lo que abre la puerta a explicar por qué una foto es mala y qué habría que cambiar al tomarla.
 \pendiente{Sustentar la motivación con fuentes originales sobre FIQA y su relación con los errores de reconocimiento.}
 
-\subsection{Pregunta de investigación y objetivos}
+\subsection{Objetivos y alcance del trabajo}
+La pregunta que guía el trabajo es la siguiente:
 \begin{quote}
 ¿Pueden los VLMs evaluar y explicar la calidad de una imagen facial de manera que sus resultados se correspondan con su utilidad real para el reconocimiento biométrico y no únicamente con su calidad perceptual?
 \end{quote}
-El objetivo general es revisar y comparar los enfoques de FIQA, prestando especial atención a las aportaciones y limitaciones de los VLMs. Se plantean los siguientes objetivos específicos:
-\begin{enumerate}
-\item Organizar los fundamentos de calidad de imagen, FIQA y modelos de visión-lenguaje.
-\item Comparar métodos especializados y multimodales mediante evidencia publicada.
-\item Examinar por separado utilidad biométrica, consistencia y exactitud de las explicaciones.
-\item Identificar limitaciones, condiciones de comparación y líneas de investigación futuras.
-\end{enumerate}
+Para responderla, el trabajo se propone ofrecer una visión general de los fundamentos de la calidad de imagen y de los VLMs, revisar cómo se han aplicado estos modelos a la calidad facial y analizar, a partir de los resultados publicados, qué aportan y dónde fallan. Se presta atención por separado a tres aspectos: si los VLMs estiman bien la utilidad biométrica, si sus explicaciones son coherentes y si esas explicaciones son correctas.
 
-\subsection{Alcance y organización}
-El trabajo será principalmente teórico y de revisión comparativa, con una extensión final aproximada de 15 páginas en formato de artículo científico. La ejecución de experimentos propios queda condicionada al alcance que se acuerde con el profesor y a los recursos disponibles. La presentación asociada, de unas 20 diapositivas, se preparará como un entregable independiente.
-
-La sección~\ref{sec:arte} organizará el estado del arte; la sección~\ref{sec:evaluacion} recogerá datasets, protocolos y comparaciones; la sección~\ref{sec:conclusiones} sintetizará los hallazgos y las cuestiones abiertas. El foco será la calidad biométrica facial.
+Se trata de una revisión de la literatura que se apoya en los resultados publicados por otros autores. La sección~\ref{sec:arte} presenta los fundamentos y el estado del arte; la sección~\ref{sec:analisis} analiza los trabajos más representativos y discute sus resultados; y la sección~\ref{sec:conclusiones} recoge las conclusiones.

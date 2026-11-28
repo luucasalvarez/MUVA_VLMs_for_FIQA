@@ -1,0 +1,65 @@
+\section{Análisis de los VLM para la evaluación de calidad biométrica facial}
+\label{sec:analisis}
+Esta sección analiza los trabajos que aplican VLMs a la calidad facial. Todas las cifras proceden de los artículos citados.
+
+\subsection{Métodos y enfoques representativos}
+\label{sec:metodos}
+\paragraph{VLMs generalistas en \textit{zero-shot}.} El trabajo más completo hasta la fecha es el de Sarıtaş et al.~\cite{Saritas_2026_FG}. Su pregunta es si un VLM generalista, sin ningún entrenamiento adicional, puede estimar la calidad de una cara de forma útil para el reconocimiento. Prueban siete modelos abiertos de las familias Qwen, Gemma, Idefics y Phi, con tamaños entre 4.000 y 72.000 millones de parámetros, y los comparan con cuatro métodos FIQA especializados: eDifFIQA, FaceQAN, SDD-FIQA y ViT-FIQA.
+
+Todo depende del prompt, y los autores prueban varias versiones. La más sencilla pide una puntuación de 0 a 100. Otra pide además que el modelo clasifique la nitidez, la resolución, la iluminación y la compresión de la imagen. Dos variantes cambian la forma de preguntar: una pregunta por la utilidad de la imagen para un sistema de reconocimiento y otra por su fiabilidad para la verificación. La última pide al modelo que indique qué degradaciones ve, como desenfoque o ruido.
+
+La evaluación usa cuatro conjuntos de datos con papeles distintos: LFW~\cite{Huang_2008_ECCVW} e IJB-B~\cite{Whitelam_2017_CVPRW}, con fotos reales tomadas sin control; SCFace~\cite{Grgic_2011_MTAP}, con imágenes de cámaras de vigilancia a tres distancias; y CelebA-HQ~\cite{Karras_2018_ICLR}, con caras de alta calidad sobre las que se añaden degradaciones artificiales para saber exactamente qué tiene cada imagen.
+
+\paragraph{Sistemas híbridos.} FaceOracle~\cite{Kabbani_2024_ECCVW} sigue el camino contrario. Es un asistente conversacional para revisar fotos de documentos de identidad en el que el modelo de lenguaje no estima la calidad. Cuando el usuario pregunta, el asistente llama a los algoritmos de OFIQ, la implementación de referencia de la norma ISO/IEC 29794-5~\cite{ISO_29794_5}, y redacta la respuesta a partir de lo que devuelven. Para justificar lo que dice, consulta una base documental con los estándares de la ICAO y de ISO, artículos científicos y normativa interna, una técnica conocida como generación aumentada por recuperación (\textit{Retrieval-Augmented Generation}, RAG). Así puede citar el documento, la página y el párrafo en que se apoya. La prueba de concepto usa gpt-3.5-turbo, aunque los autores recomiendan un modelo privado o abierto para no enviar caras a servicios externos.
+
+En la misma línea, Estrada-Real et al.~\cite{EstradaReal_2026_IWBF} estudian si los VLMs recientes detectan defectos de calidad facial, los traducen a recomendaciones comprensibles y coinciden con las medidas FIQA establecidas. No hemos tenido acceso al texto completo, así que aquí solo lo citamos como trabajo relacionado.
+
+La tabla~\ref{tab:enfoques} resume las diferencias entre estos enfoques e incluye DSL-FIQA como referencia perceptual. La fila de riesgos es una interpretación nuestra.
+
+\begin{table}[htbp]
+\centering\small
+\caption{Comparación de tres formas de abordar la calidad facial.}
+\label{tab:enfoques}
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{2.3cm}XXX@{}}
+\toprule
+& Sarıtaş et al.~\cite{Saritas_2026_FG} & FaceOracle~\cite{Kabbani_2024_ECCVW} & DSL-FIQA~\cite{Chen_2024_CVPR} \\
+\midrule
+Qué mide & Utilidad biométrica & Cumplimiento de estándares (OFIQ, ISO) & Calidad perceptual (MOS) \\
+Quién calcula la calidad & El VLM, en \textit{zero-shot} & Algoritmos normalizados de OFIQ & Un transformer entrenado \\
+Explicación & Etiquetas y texto del VLM & Texto del modelo de lenguaje con citas a los estándares & Ninguna \\
+Riesgo principal & Alucinaciones y dependencia del prompt & Solo sabe lo que miden sus herramientas & No refleja la utilidad para el reconocimiento \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Capacidad para identificar degradaciones y estimar la calidad biométrica}
+\label{sec:capacidad}
+\paragraph{Utilidad biométrica.} Sarıtaş et al. miden la utilidad con curvas de error frente a rechazo (\textit{Error-versus-Reject}, EvR): se van descartando las imágenes que el modelo considera peores y se observa cuánto baja el error de verificación. El resultado se resume con el área bajo esa curva, donde un valor menor es mejor, y se promedia sobre tres reconocedores faciales distintos.
+
+El resultado más llamativo es que el modelo más grande, Qwen2.5 de 72.000 millones de parámetros, queda prácticamente empatado con el mejor método especializado, SDD-FIQA, y por delante de los otros tres. Al descartar el 10\,\% de las imágenes, su área es de 0,00624 frente a 0,00622 de SDD-FIQA. No es que más grande sea siempre mejor: Qwen2.5 de 7.000 millones supera en la mayoría de métricas a su hermano de 32.000 millones, mientras que Gemma-3 e Idefics quedan muy por detrás. Los autores concluyen que la arquitectura pesa más que el tamaño.
+
+\paragraph{Imágenes de vigilancia.} En SCFace, los modelos Qwen dan más calidad a medida que la persona se acerca a la cámara, que es lo esperable. Qwen2.5-32B pasa de unos 16 puntos sobre 100 a 4,2~m a unos 36 a 1~m, y justifica las imágenes lejanas con etiquetas como baja resolución o desenfoque. Otros modelos no captan esta diferencia: Gemma-3 da casi la misma puntuación a todas las distancias e Idefics pone 0 a casi todas las imágenes lejanas.
+
+\paragraph{Detección de degradaciones.} Con las imágenes de CelebA-HQ degradadas a propósito, con un defecto fuerte y dos leves por imagen, se puede comprobar si el modelo nombra los defectos correctos. El mejor detector es Qwen2-7B, que encuentra el defecto fuerte en el 79,8\,\% de los casos y los tres defectos en el 39,7\,\%. Qwen2.5-32B, en cambio, solo encuentra los tres en el 8,7\,\%. Es decir, el modelo que mejor ordena las imágenes no es necesariamente el que mejor explica qué les pasa.
+
+\subsection{Explicabilidad, robustez y limitaciones}
+\label{sec:explicabilidad}
+Al hablar de explicaciones hay que separar dos propiedades. Una explicación es consistente si concuerda con la puntuación que da el propio modelo, y es exacta si describe lo que de verdad le pasa a la imagen. Los resultados muestran que una cosa no garantiza la otra.
+
+\paragraph{Robustez al prompt.} Cambiar la redacción de la pregunta apenas afecta a Qwen2.5-32B, pero sí al modelo de 7B, que mejora cuando el prompt menciona explícitamente el reconocimiento o la verificación. Según los autores, los modelos pequeños necesitan más pistas sobre la tarea.
+
+\paragraph{Consistencia.} En Qwen2.5-32B, las imágenes que el modelo describe como nítidas reciben entre 80 y 95 puntos y las que describe como muy degradadas, entre 5 y 25. Puntuación y etiquetas van de la mano.
+
+\paragraph{Alucinaciones.} Con imágenes limpias, sin ningún defecto, los modelos se inventan problemas. Qwen2.5-32B ve algún defecto en cerca de la mitad de ellas, aunque al menos baja la puntuación de forma coherente con lo que cree ver. Qwen2.5-7B acierta más, ya que da como limpias el 87,9\,\%, pero cuando se equivoca su puntuación cae de forma errática. Los autores lo resumen como un compromiso: los modelos grandes son hipercríticos, pero razonan de forma más coherente.
+
+\paragraph{Coste.} Un VLM es mucho más lento que un método especializado. En la misma tarjeta gráfica, Qwen2.5-7B tarda 33,3~ms por imagen y eDifFIQA 0,7~ms, unas 50 veces menos. Por eso los autores proponen usar los VLMs como complemento y no como sustituto.
+
+\paragraph{FaceOracle.} En el caso híbrido, la evaluación mide sobre todo si el asistente elige la herramienta adecuada, cosa que hace en el 97\,\% de los casos, y si sus respuestas se parecen a las de referencia más que las de ChatGPT, lo que también ocurre. Hay que leer estos resultados con cuidado, y esta lectura es nuestra: las respuestas de referencia las calcula el mismo OFIQ que usa el asistente, así que se evalúa si llama a la herramienta correcta, no si la calidad que comunica es correcta. Además, no hay ningún estudio con usuarios.
+\pendiente{Añadir en pocas frases los resultados de Sony et al.~\cite{Sony_2026_IWBF} sobre explicaciones alucinadas en comparación facial y los de Shahreza y Marcel~\cite{Shahreza_2026_ICASSP} sobre MLLMs frente a reconocedores especializados.}
+
+\subsection{Discusión y perspectivas futuras}
+\label{sec:discusion}
+Los trabajos revisados permiten una primera respuesta matizada. Un VLM generalista, sin entrenamiento, puede ordenar imágenes faciales por su utilidad biométrica casi tan bien como los mejores métodos especializados. Pero no todos los modelos lo consiguen, depende de cómo se le pregunte, es mucho más lento y sus explicaciones no son fiables, sobre todo con imágenes que no tienen ningún defecto. FaceOracle muestra otra vía: dejar que un algoritmo normalizado mida y usar el modelo de lenguaje solo para explicar el resultado y citar la norma. DSL-FIQA, por su parte, recuerda que acertar con la opinión humana no implica acertar con la utilidad para el reconocimiento. Las cifras de estos trabajos no son comparables entre sí, porque cada uno mide una cosa distinta.
+
+De aquí se desprenden varias líneas de trabajo. La primera es ajustar los VLMs a la tarea con datos de calidad biométrica, en lugar de usarlos solo en \textit{zero-shot}. La segunda es combinar ambos mundos en sistemas híbridos, donde un método especializado mida la utilidad y el VLM la explique. La tercera, quizá la más necesaria, es evaluar las explicaciones por su exactitud y no solo por su coherencia, idealmente con estudios con usuarios. Por último, cualquier despliegue real tendrá que resolver el coste, la privacidad de las imágenes y los posibles sesgos de estos modelos.
+\pendiente{Revisar esta discusión cuando estén completos los apartados de la sección~\ref{sec:arte}.}
